@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { productServices } from "./product.services";
 
+// _________Handles creating a new product and responds with the created product data.---->
 const createProduct = async (req: Request, res: Response) => {
   const productData = req.body;
   const result = await productServices.createProduct(productData);
@@ -11,18 +12,41 @@ const createProduct = async (req: Request, res: Response) => {
   });
 };
 
-const getAllProduct = async (req: Request, res: Response) => {
+// _______Handles get all product data and searchTerm product data.----------->
+const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const result = await productServices.getAllProduct();
-    res.json({
-      success: true,
-      message: "Products fetched successfully!",
-      data: result,
-    });
-  } catch (err) {
-    console.log(err);
+    const { searchTerm } = req.query as { searchTerm?: string };
+    let products = [];
+
+    if (searchTerm) {
+      products = await productServices.searchProduct(searchTerm);
+    } else {
+      products = await productServices.getAllProduct();
+    }
+
+    if (products.length === 0) {
+      res.status(404).json({
+        success: false,
+        message: searchTerm
+          ? `No products found matching search term '${searchTerm}'`
+          : "No products available",
+        data: products,
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: searchTerm
+          ? `Products matching search term '${searchTerm}' fetched successfully!`
+          : "All products fetched successfully!",
+        data: products,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server Error", error });
   }
 };
+
+// ________Handles Retrieve a Specific Product by ID----------->
 const getProductById = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
@@ -36,6 +60,8 @@ const getProductById = async (req: Request, res: Response) => {
     console.log(err);
   }
 };
+
+//_________Handles Update Product Information------------>
 const updateProduct = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
@@ -58,13 +84,37 @@ const updateProduct = async (req: Request, res: Response) => {
       data: updatedProduct,
     });
   } catch (error) {
+    res.status(500).json({ success: false, message: "Server Error", error });
+  }
+};
+
+//_________Handles delete Product---------------->
+const deleteProduct = async (req: Request, res: Response) => {
+  try {
+    const { productId } = req.params;
+
+    const deletedProduct = await productServices.deleteProductBYId(productId);
+
+    if (!deletedProduct) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Product deleted successfully!",
+      data: null,
+    });
+  } catch (error) {
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 
 export const productController = {
   createProduct,
-  getAllProduct,
+  getAllProducts,
   getProductById,
   updateProduct,
+  deleteProduct,
 };

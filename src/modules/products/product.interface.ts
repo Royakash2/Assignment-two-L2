@@ -1,4 +1,4 @@
-// product data types
+// _________Define types for product---------->
 
 export type TVariant = {
   type: string;
