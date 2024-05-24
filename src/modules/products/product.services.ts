@@ -16,8 +16,8 @@ const getProductBYId = async (id: string) => {
   const result = await Product.findById(id);
   return result;
 };
-const updateProductBYId = async (id: string) => {
-  const result = await Product.findByIdAndUpdate(id);
+const updateProductBYId = async (id: string, updateData: TProduct) => {
+  const result = await Product.findByIdAndUpdate(id, updateData, { new: true });
   return result;
 };
 
