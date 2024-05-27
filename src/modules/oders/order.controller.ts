@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { orderServices } from "./order.services";
 import { TOrder } from "./order.interface";
 
+// create order controller__-------->
 const createOrder = async (req: Request, res: Response) => {
   try {
     const orderData: TOrder = req.body;
@@ -17,7 +18,8 @@ const createOrder = async (req: Request, res: Response) => {
   }
 };
 
-export const getAllOrders = async (req: Request, res: Response) => {
+// get all order controller______--------->
+const getAllOrders = async (req: Request, res: Response) => {
   try {
     const email = req.query.email as string | undefined;
     const result = email

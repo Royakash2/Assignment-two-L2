@@ -14,7 +14,7 @@ app.use("/api/orders", orderRoutes);
 app.get("/", (req: Request, res: Response) => {
   res.send("welcome to E-commerce Product management system");
 });
-// Middleware to handle undefined routes
+// Middleware to handle undefined routes_____------->
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.status(404).json({
     success: false,
@@ -22,7 +22,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-// Error-handling middleware
+// Error-handling __________------>
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
   res.status(500).json({
