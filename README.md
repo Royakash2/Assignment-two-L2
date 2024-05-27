@@ -40,7 +40,7 @@ Create a .env file in the root directory of the project and add the following va
 PORT=3000
 MONGODB_URI=your mongoDB data base url
 
-Compile the TypeScript code to JavaScript: $ tsc
+Compile the TypeScript code to JavaScript: npm run build
 
 To start the application, use the following command: npm start:dev
 
