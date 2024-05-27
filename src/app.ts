@@ -1,7 +1,6 @@
-import express, { NextFunction, Request, Response, json } from "express";
+import express, { Request, Response } from "express";
 import { productRoutes } from "./modules/products/product.route";
 import { orderRoutes } from "./modules/oders/order.route";
-import { z } from "zod";
 const app = express();
 app.use(express.json());
 
@@ -16,7 +15,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("welcome to E-commerce Product management system");
 });
 // Middleware to handle undefined routes_____------->
-app.use((req: Request, res: Response, next: NextFunction) => {
+app.use((req: Request, res: Response) => {
   res.status(404).json({
     success: false,
     message: "Route not found",
@@ -24,7 +23,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 // Error-handling __________------>
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+app.use((err: any, req: Request, res: Response) => {
   console.error(err.stack);
   res.status(500).json({
     success: false,

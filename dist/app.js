@@ -17,14 +17,14 @@ app.get("/", (req, res) => {
     res.send("welcome to E-commerce Product management system");
 });
 // Middleware to handle undefined routes_____------->
-app.use((req, res, next) => {
+app.use((req, res) => {
     res.status(404).json({
         success: false,
         message: "Route not found",
     });
 });
 // Error-handling __________------>
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
     console.error(err.stack);
     res.status(500).json({
         success: false,
