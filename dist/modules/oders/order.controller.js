@@ -11,10 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.orderController = void 0;
 const order_services_1 = require("./order.services");
+const order_validation_1 = require("../validation/order.validation");
+const zod_1 = require("zod");
 // create order controller__-------->
 const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const orderData = req.body;
+        const orderData = order_validation_1.orderValidationSchema.parse(req.body);
         const result = yield order_services_1.orderServices.createOrder(orderData);
         res.status(201).json({
             success: true,
@@ -23,8 +25,18 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         });
     }
     catch (error) {
-        const errorMessage = error.message;
-        res.status(400).json({ success: false, message: errorMessage });
+        if (error instanceof zod_1.z.ZodError) {
+            res.status(400).json({
+                success: false,
+                message: error.errors,
+            });
+        }
+        else {
+            res.status(500).json({
+                success: false,
+                message: error.message || "Internal Server Error",
+            });
+        }
     }
 });
 // get all order controller______--------->

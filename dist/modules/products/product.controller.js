@@ -11,15 +11,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.productController = void 0;
 const product_services_1 = require("./product.services");
+const product_validation_1 = require("../validation/product.validation");
+const zod_1 = require("zod");
 // _________Handles creating a new product and responds with the created product data.---->
 const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const productData = req.body;
-    const result = yield product_services_1.productServices.createProduct(productData);
-    res.json({
-        success: true,
-        message: "Product created successfully!",
-        data: result,
-    });
+    try {
+        const productData = product_validation_1.ProductValidationSchema.parse(req.body);
+        const result = yield product_services_1.productServices.createProduct(productData);
+        res.json({
+            success: true,
+            message: "Product created successfully!",
+            data: result,
+        });
+    }
+    catch (error) {
+        if (error instanceof zod_1.z.ZodError) {
+            res.status(400).json({
+                success: false,
+                message: error.errors,
+            });
+        }
+        else {
+            res.status(500).json({
+                success: false,
+                message: error.message || "Internal Server Error",
+            });
+        }
+    }
 });
 // _______Handles get all product data and searchTerm product data.----------->
 const getAllProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
