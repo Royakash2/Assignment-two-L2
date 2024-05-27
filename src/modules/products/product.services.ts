@@ -41,6 +41,19 @@ const deleteProductBYId = async (id: string) => {
   const result = await Product.findByIdAndDelete(id);
   return result;
 };
+// _____update inventory by using Id
+const updateInventory = async (
+  productId: string,
+  quantity: number,
+  inStock: boolean
+) => {
+  const result = await Product.findByIdAndUpdate(
+    productId,
+    { "inventory.quantity": quantity, "inventory.inStock": inStock },
+    { new: true }
+  );
+  return result;
+};
 
 export const productServices = {
   createProduct,
@@ -49,4 +62,5 @@ export const productServices = {
   updateProductBYId,
   deleteProductBYId,
   searchProduct,
+  updateInventory,
 };
