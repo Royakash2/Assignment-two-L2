@@ -9,5 +9,5 @@ const OrderSchema = new mongoose_1.Schema({
     price: { type: Number, required: true },
     quantity: { type: Number, required: true },
 });
-// model for order
+// model for order________---->
 exports.Order = (0, mongoose_1.model)("Order", OrderSchema);

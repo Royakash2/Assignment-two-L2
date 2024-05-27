@@ -10,6 +10,6 @@ const OrderSchema = new Schema<TOrder>({
   quantity: { type: Number, required: true },
 });
 
-// model for order
+// model for order________---->
 
 export const Order = model<TOrder>("Order", OrderSchema);
