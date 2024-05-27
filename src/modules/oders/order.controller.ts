@@ -1,20 +1,31 @@
 import { Request, Response } from "express";
 import { orderServices } from "./order.services";
 import { TOrder } from "./order.interface";
+import { orderValidationSchema } from "../validation/order.validation";
+import { z } from "zod";
 
 // create order controller__-------->
 const createOrder = async (req: Request, res: Response) => {
   try {
-    const orderData: TOrder = req.body;
+    const orderData: TOrder = orderValidationSchema.parse(req.body);
     const result = await orderServices.createOrder(orderData);
     res.status(201).json({
       success: true,
       message: "Order created successfully!",
       data: result,
     });
-  } catch (error) {
-    const errorMessage = (error as Error).message;
-    res.status(400).json({ success: false, message: errorMessage });
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({
+        success: false,
+        message: error.errors,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: error.message || "Internal Server Error",
+      });
+    }
   }
 };
 

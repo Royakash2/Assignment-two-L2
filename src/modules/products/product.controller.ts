@@ -1,15 +1,31 @@
 import { Request, Response } from "express";
 import { productServices } from "./product.services";
+import { ProductValidationSchema } from "../validation/product.validation";
+import { z } from "zod";
 
 // _________Handles creating a new product and responds with the created product data.---->
 const createProduct = async (req: Request, res: Response) => {
-  const productData = req.body;
-  const result = await productServices.createProduct(productData);
-  res.json({
-    success: true,
-    message: "Product created successfully!",
-    data: result,
-  });
+  try {
+    const productData = ProductValidationSchema.parse(req.body);
+    const result = await productServices.createProduct(productData);
+    res.json({
+      success: true,
+      message: "Product created successfully!",
+      data: result,
+    });
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({
+        success: false,
+        message: error.errors,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: error.message || "Internal Server Error",
+      });
+    }
+  }
 };
 
 // _______Handles get all product data and searchTerm product data.----------->
